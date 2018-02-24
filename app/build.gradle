@@ -30,4 +30,11 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.2'
     implementation 'com.google.android.things.contrib:driver-pwmservo:0.3'
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    androidTestCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
+
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }
