@@ -8,7 +8,9 @@ import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 
 const val I2C_DEVICE_NAME = "I2C1"
-const val SERVO_HAT_I2C_ADDRESS = 0x40
+
+const val RIGHT_ADDRESS = 0x40
+const val LEFT_ADDRESS = 0x41
 
 // Original
 // const val MIN_PULSE_MS = 1.0
@@ -20,14 +22,20 @@ const val MAX_ANGLE_DEG = 180.0
 const val MIN_CHANNEL = 0
 const val MAX_CHANNEL = 15
 
+const val TURN_DELAY = 1000L
+const val WALK_DELAY = 1000L
+
+const val TESTING = true
+
 class MainActivity : Activity() {
-    private var servoHat: ServoHat = ServoHat()
+    private var rightServoHat: ServoHat = ServoHat(RIGHT_ADDRESS)
+    private var leftServoHat: ServoHat = ServoHat(LEFT_ADDRESS)
+    private var twoHats: ServoDoubleHat = ServoDoubleHat(rightServoHat, leftServoHat)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         launch {
-            //servoHat.setAngle(1, 10.0)
             delay(1000L)
             moveServo()
         }
@@ -35,30 +43,53 @@ class MainActivity : Activity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        servoHat.close()
+        rightServoHat.close()
+        leftServoHat.close()
     }
 
     private suspend fun moveServo(){
-        var angle = servoHat.getAngle(0);
 
-        if (angle < 20.0) {
-            angle = 170.0;
-        } else if (angle > 160.0) {
-            angle = 10.0;
+        if (TESTING) {
+            twoHats.test()
+            delay(1000)
+        } else {
+            twoHats.forward()
+            delay(WALK_DELAY)
+            twoHats.forward()
+            delay(WALK_DELAY)
+            twoHats.forward()
+            delay(WALK_DELAY)
+            twoHats.forward()
+            delay(WALK_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
+            twoHats.turnCounterClockwise()
+            delay(TURN_DELAY)
         }
 
-        servoHat.setAngle(0, angle)
-        servoHat.setAngle(1, 10.0)
-        servoHat.setAngle(2, 90.0)
-        servoHat.setAngle(3, 170.0)
-
-        delay(1000L)
         moveServo()
     }
 }
 
-class ServoHat() {
-    private val adafruitPWM: AdafruitPwm = AdafruitPwm(I2C_DEVICE_NAME, SERVO_HAT_I2C_ADDRESS)
+class ServoHat(address:Int) {
+    //private val adafruitPWM: AdafruitPwm = AdafruitPwm(I2C_DEVICE_NAME, SERVO_HAT_I2C_ADDRESS)
+    private val adafruitPWM: AdafruitPwm = AdafruitPwm(I2C_DEVICE_NAME, address)
     /*
      https://github.com/adafruit/Adafruit_Python_PCA9685/blob/master/examples/simpletest.py
      1,000,000 us per second
@@ -86,7 +117,7 @@ class ServoHat() {
             val dutyCycle = (pulse * 1000 / pulseLength).toInt()
             servos[channel] = angle
             adafruitPWM.setPwm(channel, 0, dutyCycle)
-            Log.i("TAG50HZ", "channel: " + channel + " angle: " + angle + " dutyCycle: " + dutyCycle);
+            //Log.i("TAG50HZ", "channel: " + channel + " angle: " + angle + " dutyCycle: " + dutyCycle);
         }
     }
 

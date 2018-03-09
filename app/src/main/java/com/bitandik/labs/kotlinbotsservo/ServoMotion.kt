@@ -1,32 +1,33 @@
 package com.bitandik.labs.kotlinbotsservo
 
-//import com.zugaldia.robocar.hardware.adafruit2348.AdafruitPwm
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 
-const val HORIZONTAL    = 0
-const val VERTICAL      = 1
-const val KNEE          = 2
+private const val HORIZONTAL    = 0
+private const val VERTICAL      = 1
+private const val KNEE          = 2
 
-const val RIGHT_FRONT   = 0
-const val RIGHT_MID     = 1
-const val RIGHT_BACK    = 2
-const val LEFT_FRONT    = 3
-const val LEFT_MID      = 4
-const val LEFT_BACK     = 5
+private const val RIGHT_FRONT   = 0
+private const val RIGHT_MID     = 1
+private const val RIGHT_BACK    = 2
+private const val LEFT_FRONT    = 3
+private const val LEFT_MID      = 4
+private const val LEFT_BACK     = 5
 
-const val VERTICAL_RIGHT_RISE       = 30.0
-const val VERTICAL_LEFT_RISE        = -30.0
-const val VERTICAL_RETURN_TO_BASE   = 0.0
+private const val VERTICAL_RIGHT_RISE       = 30.0
+private const val VERTICAL_LEFT_RISE        = -30.0
+private const val VERTICAL_RETURN_TO_BASE   = 0.0
 
-const val HORIZONTAL_TURN_CLOCKWISE = -30.0
-const val HORIZONTAL_TURN_COUNTERCW = 30.0
-const val HORIZONTAL_RIGHT_FORWARD  = 15.0
-const val HORIZONTAL_LEFT_FORWARD   = -15.0
-const val HORIZONTAL_RETURN_TO_BASE = 0.0
+private const val HORIZONTAL_TURN_CLOCKWISE = -30.0
+private const val HORIZONTAL_TURN_COUNTERCW = 30.0
+private const val HORIZONTAL_RIGHT_FORWARD  = 15.0
+private const val HORIZONTAL_LEFT_FORWARD   = -15.0
+private const val HORIZONTAL_RETURN_TO_BASE = 0.0
 
-const val DELAY_TURN            = 80
-const val DELAY_FORWARD         = 80
+private const val KNEE_BASE = 90.0
+
+private const val DELAY_TURN            = 80
+private const val DELAY_FORWARD         = 80
 
 class ServoMotion (sHat: ServoHat) {
     private var hat = sHat
@@ -42,6 +43,13 @@ class ServoMotion (sHat: ServoHat) {
 
     private var horizontalBase = arrayOf(70.0, 90.0, 110.0, 110.0, 90.0, 70.0)
     private var verticalBase = arrayOf(70.0, 70.0, 70.0, 110.0, 110.0, 110.0)
+
+    init {
+        // set knees
+        for (i in 0..5) {
+            hat.setAngle(legs[i][KNEE], KNEE_BASE)
+        }
+    }
 
     fun turnClockwise () {
         launch {
