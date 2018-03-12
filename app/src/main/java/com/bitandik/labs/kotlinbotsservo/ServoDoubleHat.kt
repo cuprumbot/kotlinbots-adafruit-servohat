@@ -28,8 +28,8 @@ private const val HORIZONTAL_LEFT_AGGRO     = -45.0
 private const val HORIZONTAL_RETURN_TO_BASE = 0.0
 
 private const val KNEE_BASE = 90.0
-private const val DELAY_TURN            = 125
-private const val DELAY_FORWARD         = 125
+private const val DELAY_TURN            = 80
+private const val DELAY_FORWARD         = 80
 
 class ServoDoubleHat (rHat: ServoHat, lHat: ServoHat) {
     private var rightHat = rHat
@@ -44,10 +44,10 @@ class ServoDoubleHat (rHat: ServoHat, lHat: ServoHat) {
                                     arrayOf(8, 9, 10)   // LEFT BACK
                                 )
     private var horizontalBase = arrayOf(
-                                            85.0-10.0,  // RIGHT FRONT
+                                            85.0-10.0-15.0,  // RIGHT FRONT
                                             90.0+15.0,  // RIGHT MID
                                             110.0+10.0, // RIGHT BACK
-                                            95.0,       // LEFT FRONT
+                                            95.0+15.0,       // LEFT FRONT
                                             90.0+10.0,  // LEFT MID
                                             70.0        // LEFT BACK
                                         )
@@ -65,6 +65,26 @@ class ServoDoubleHat (rHat: ServoHat, lHat: ServoHat) {
         for (i in 0..2) {
             leftHat.setAngle(legs[i+3][KNEE], KNEE_BASE)
             rightHat.setAngle(legs[i+0][KNEE], KNEE_BASE)
+        }
+    }
+
+    fun turnClockwiseImproved () {      /* TESTING PENDING */
+        launch {
+            moveHorizontalRLR(HORIZONTAL_TURN_CLOCKWISE)
+            moveVerticalRLR(VERTICAL_LEFT_RISE, VERTICAL_RIGHT_RISE)
+            delay(DELAY_TURN)
+            moveVerticalRLR(VERTICAL_RETURN_TO_BASE)
+            delay(DELAY_TURN)
+
+            moveHorizontalLRL(HORIZONTAL_TURN_CLOCKWISE)
+            moveVerticalLRL(VERTICAL_LEFT_RISE, VERTICAL_RIGHT_RISE)
+            delay(DELAY_TURN)
+            moveVerticalLRL(VERTICAL_RETURN_TO_BASE)
+            delay(DELAY_TURN)
+
+            moveHorizontalRLR(HORIZONTAL_RETURN_TO_BASE)
+            moveHorizontalLRL(HORIZONTAL_RETURN_TO_BASE)
+            delay(DELAY_TURN)
         }
     }
 
@@ -164,7 +184,7 @@ class ServoDoubleHat (rHat: ServoHat, lHat: ServoHat) {
     }
 
     fun test () {
-        val TEST_RISE = 0.0
+        val TEST_RISE = 40.0
 
         launch {
             moveHorizontalRLR(HORIZONTAL_RETURN_TO_BASE)
@@ -207,7 +227,7 @@ class ServoDoubleHat (rHat: ServoHat, lHat: ServoHat) {
     private suspend fun moveVerticalRLR (delta : Double) {moveVerticalRLR(delta, delta)}
     private suspend fun moveVerticalRLR (deltaLeft : Double, deltaRight : Double) {
         rightHat.setAngle(legs[RIGHT_FRONT][VERTICAL], verticalBase[RIGHT_FRONT] + deltaRight)
-        leftHat.setAngle(legs[LEFT_MID][VERTICAL], 180.0-verticalBase[LEFT_MID] + deltaLeft)    // Replacement servo
+        leftHat.setAngle(legs[LEFT_MID][VERTICAL], 180.0-(verticalBase[LEFT_MID] + deltaLeft))    // Replacement servo
         rightHat.setAngle(legs[RIGHT_BACK][VERTICAL], verticalBase[RIGHT_BACK] + deltaRight)
     }
 
@@ -215,7 +235,7 @@ class ServoDoubleHat (rHat: ServoHat, lHat: ServoHat) {
     private suspend fun moveVerticalLRL (delta : Double) {moveVerticalLRL(delta, delta)}
     private suspend fun moveVerticalLRL (deltaLeft : Double, deltaRight : Double) {
         leftHat.setAngle(legs[LEFT_FRONT][VERTICAL], verticalBase[LEFT_FRONT] + deltaLeft)
-        rightHat.setAngle(legs[RIGHT_MID][VERTICAL], 180.0-verticalBase[RIGHT_MID] + deltaRight)    // Replacement servo
+        rightHat.setAngle(legs[RIGHT_MID][VERTICAL], 180.0-(verticalBase[RIGHT_MID] + deltaRight))    // Replacement servo
         leftHat.setAngle(legs[LEFT_BACK][VERTICAL], verticalBase[LEFT_BACK] + deltaLeft)
     }
 }

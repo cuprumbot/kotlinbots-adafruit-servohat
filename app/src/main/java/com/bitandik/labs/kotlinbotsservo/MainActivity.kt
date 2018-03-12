@@ -25,7 +25,7 @@ const val MAX_CHANNEL = 15
 const val TURN_DELAY = 1000L
 const val WALK_DELAY = 1000L
 
-const val TESTING = true
+const val TESTING = false
 
 class MainActivity : Activity() {
     private var rightServoHat: ServoHat = ServoHat(RIGHT_ADDRESS)
@@ -61,6 +61,7 @@ class MainActivity : Activity() {
             delay(WALK_DELAY)
             twoHats.forward()
             delay(WALK_DELAY)
+
             twoHats.turnCounterClockwise()
             delay(TURN_DELAY)
             twoHats.turnCounterClockwise()
@@ -81,6 +82,7 @@ class MainActivity : Activity() {
             delay(TURN_DELAY)
             twoHats.turnCounterClockwise()
             delay(TURN_DELAY)
+
         }
 
         moveServo()
